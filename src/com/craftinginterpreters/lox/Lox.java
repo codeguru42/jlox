@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Lox {
+    static  boolean hadError = false;
+
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
             System.out.println("Usage: jlox [script]");
@@ -35,10 +37,12 @@ public class Lox {
             String line = reader.readLine();
             if (line == null) break;
             run(line);
+            hadError = false;
         }
     }
 
     private static void run(String source) {
+        if (hadError) System.exit(65);
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
 
