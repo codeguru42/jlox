@@ -122,4 +122,18 @@ public class Parser {
     private Token previous() {
         return tokens.get(current - 1);
     }
+
+    private Token consume(TokenType type, String message) {
+        if (check(type)) return advance();
+
+        throw error(peek(), message);
+    }
+
+    private ParseError error(Token token, String message) {
+        Lox.error(token, message);
+        return new ParseError();
+    }
+
+    private static class ParseError extends RuntimeException {
+    }
 }
