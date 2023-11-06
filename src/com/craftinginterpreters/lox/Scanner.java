@@ -8,12 +8,6 @@ import java.util.Map;
 import static com.craftinginterpreters.lox.TokenType.*;
 
 public class Scanner {
-    private final String source;
-    private final List<Token> tokens = new ArrayList<>();
-    private int start = 0;
-    private int current = 0;
-    private int line = 1;
-
     private static final Map<String, TokenType> keywords = new HashMap<>();
 
     static {
@@ -35,6 +29,12 @@ public class Scanner {
         keywords.put("while", WHILE);
     }
 
+    private final String source;
+    private final List<Token> tokens = new ArrayList<>();
+    private int start = 0;
+    private int current = 0;
+    private int line = 1;
+
 
     public Scanner(String source) {
         this.source = source;
@@ -53,24 +53,44 @@ public class Scanner {
     private void scanToken() {
         char c = advance();
         switch (c) {
-            case '(': addToken(LEFT_PAREN); break;
-            case ')': addToken(RIGHT_PAREN); break;
-            case '{': addToken(LEFT_BRACE); break;
-            case '}': addToken(RIGHT_BRACE); break;
-            case ',': addToken(COMMA); break;
-            case '.': addToken(DOT); break;
-            case '-': addToken(MINUS); break;
-            case '+': addToken(PLUS); break;
-            case ';': addToken(SEMICOLON); break;
-            case '*': addToken(STAR); break;
+            case '(':
+                addToken(LEFT_PAREN);
+                break;
+            case ')':
+                addToken(RIGHT_PAREN);
+                break;
+            case '{':
+                addToken(LEFT_BRACE);
+                break;
+            case '}':
+                addToken(RIGHT_BRACE);
+                break;
+            case ',':
+                addToken(COMMA);
+                break;
+            case '.':
+                addToken(DOT);
+                break;
+            case '-':
+                addToken(MINUS);
+                break;
+            case '+':
+                addToken(PLUS);
+                break;
+            case ';':
+                addToken(SEMICOLON);
+                break;
+            case '*':
+                addToken(STAR);
+                break;
             case '!':
-                addToken(match('=') ? BANG_EQUAL: BANG);
+                addToken(match('=') ? BANG_EQUAL : BANG);
                 break;
             case '=':
-                addToken(match('=') ? EQUAL_EQUAL: EQUAL);
+                addToken(match('=') ? EQUAL_EQUAL : EQUAL);
                 break;
             case '<':
-                addToken(match('=') ? LESS_EQUAL: LESS);
+                addToken(match('=') ? LESS_EQUAL : LESS);
                 break;
             case '>':
                 addToken(match('=') ? GREATER_EQUAL : GREATER);
@@ -90,7 +110,9 @@ public class Scanner {
             case '\n':
                 line++;
                 break;
-            case '"': string(); break;
+            case '"':
+                string();
+                break;
             default:
                 if (isDigit(c)) {
                     number();
@@ -108,13 +130,13 @@ public class Scanner {
 
         String text = source.substring(start, current);
         TokenType type = keywords.get(text);
-        if(type == null) type = IDENTIFIER;
+        if (type == null) type = IDENTIFIER;
 
         addToken(type);
     }
 
     private boolean isAlpha(char c) {
-        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z' || c =='_');
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z' || c == '_');
     }
 
     private boolean isAlphaNumeric(char c) {
@@ -152,7 +174,7 @@ public class Scanner {
     }
 
     private void string() {
-        while(peek() != '"' && !isAtEnd()) {
+        while (peek() != '"' && !isAtEnd()) {
             if (peek() == '\n') line++;
             advance();
         }
@@ -166,7 +188,7 @@ public class Scanner {
         advance();
 
         // Trim surrounding quotes
-        String value = source.substring(start + 1, current + 1);
+        String value = source.substring(start + 1, current - 1);
         addToken(STRING, value);
     }
 
