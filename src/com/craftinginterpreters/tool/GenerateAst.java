@@ -24,6 +24,15 @@ public class GenerateAst {
                 "Unary: Token operator, Expr right"
             )
         );
+
+        defineAst(
+            outputDir,
+            "Stmt",
+            Arrays.asList(
+                "Expression : Expr expression",
+                "Print : Expr expression"
+            )
+        );
     }
 
     private static void defineAst(String outputDir, String baseName, List<String> types) throws IOException {
@@ -35,7 +44,7 @@ public class GenerateAst {
         writer.println("import java.util.List;");
         writer.println();
         writer.println("abstract class " + baseName + " {");
-        
+
         defineVisitor(writer, baseName, types);
 
         // The AST classes
