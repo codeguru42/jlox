@@ -248,12 +248,8 @@ public class Parser {
     private Expr call() {
         Expr expr = primary();
 
-        while (true) {
-            if (match(LEFT_PAREN)) {
-                expr = finishCall(expr);
-            } else {
-                break;
-            }
+        while (match(LEFT_PAREN)) {
+            expr = finishCall(expr);
         }
 
         return expr;
