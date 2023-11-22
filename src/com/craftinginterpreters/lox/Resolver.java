@@ -67,6 +67,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitExpressionStmt(Stmt.Expression stmt) {
+        resolve(stmt.expression);
         return null;
     }
 
@@ -81,16 +82,23 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitIfStmt(Stmt.If stmt) {
+        resolve(stmt.condition);
+        resolve(stmt.thenBranch);
+        if (stmt.elseBranch != null) resolve(stmt.elseBranch);
         return null;
     }
 
     @Override
     public Void visitPrintStmt(Stmt.Print stmt) {
+        resolve(stmt.expression);
         return null;
     }
 
     @Override
     public Void visitReturnStmt(Stmt.Return stmt) {
+        if (stmt.value != null) {
+            resolve(stmt.value);
+        }
         return null;
     }
 
@@ -106,6 +114,8 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitWhileStmt(Stmt.While stmt) {
+        resolve(stmt.condition);
+        resolve(stmt.body);
         return null;
     }
 
