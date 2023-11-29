@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     final Environment globals = new Environment();
-    private Environment environment = globals;
     private final Map<Expr, Integer> locals = new HashMap<>();
+    private Environment environment = globals;
 
     Interpreter() {
         globals.define("clock", new LoxCallable() {
@@ -52,7 +52,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Void visitClassStmt(Stmt.Class stmt) {
         environment.define(stmt.name.lexeme, null);
-        LoxClass klass = new LoxClass(stmt.name.lexeme);
+        Map<String, LoxFunction> methods = new HashMap<>();
+        for (Stmt.Function method : stmt.methods) {
+            LoxFunction function = new LoxFunction(method, environment);
+            methods.put(method.name.lexeme, function);
+        }
+
+        LoxClass klass = new LoxClass(stmt.name.lexeme, methods);
         environment.assign(stmt.name, klass);
         return null;
     }
