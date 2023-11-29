@@ -1,16 +1,14 @@
 package com.craftinginterpreters.lox;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     private final Interpreter interpreter;
     private Stack<Map<String, Boolean>> scopes = new Stack<>();
     private FunctionType currentFunction = FunctionType.NONE;
-
-    private enum FunctionType {
-        NONE,
-        FUNCTION,
-    }
 
     Resolver(Interpreter interpreter) {
         this.interpreter = interpreter;
@@ -98,7 +96,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     @Override
     public Void visitClassStmt(Stmt.Class stmt) {
         declare(stmt.name);
-        declare(stmt.name);
+        define(stmt.name);
         return null;
     }
 
@@ -219,5 +217,10 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         resolve(function.body);
         endScope();
         currentFunction = enclosingFunction;
+    }
+
+    private enum FunctionType {
+        NONE,
+        FUNCTION,
     }
 }
